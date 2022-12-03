@@ -36,9 +36,12 @@ const getItem = async (page) => {
       const currentPage = res.data.items.current_page;
       const maxPage = res.data.items.last_page;
       if(res && res.status == 200 && currentPage <= maxPage) {
+        console.log(res.data.items);
         let newPost = res.data.items.data;
+        let newPage = res.data.items.currentPage;
+        // todoArray.value.push({currentPage: newPage});
         for(let i = 0; i < post_per_page; i++){
-          todoArray.value.push({
+          todoArray.value.push({            
             id: newPost[i].id,
             title: newPost[i].title,
             description: newPost[i].description,
@@ -54,7 +57,9 @@ const deleteItem = async(id) => {
   console.log(id);
   try {
     let res = await axios.delete(`item/${id}`, {headers: { Authorization: `Bearer ${token.myToken}` }});
-    await getItem();
+    todoArray.value = [];
+    page.value = 1;
+    getItem(page.value);
     console.log(res, 'delete response');
   }catch(e) {
     console.log(e);
